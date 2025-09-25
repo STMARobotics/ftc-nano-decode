@@ -1,49 +1,47 @@
-//67
-
 package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "DriveCode", group = "StarterBot")
-//@disabled
-
 public class DriveCode extends OpMode {
 
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private DcMotor launchDrive = null;
+    private DcMotor flywheel = null;
 
-    private CRServo spinnySpinL = null;
-    private CRServo spinnySpinR = null;
+    private CRServo leftFeeder = null;
+    private CRServo rightFeeder = null;
+
+    private ElapsedTime shootTimer = new ElapsedTime();
+    private boolean isShooting = false;
 
     public void init() {
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        launchDrive = hardwareMap.get(DcMotor.class, "launch_drive");
+        flywheel = hardwareMap.get(DcMotor.class, "launch_drive");
 
-        spinnySpinL = hardwareMap.get(CRServo.class, "spinny_SpinL");
-        spinnySpinR = hardwareMap.get(CRServo.class, "spinny_SpinR");
+        leftFeeder = hardwareMap.get(CRServo.class, "spinny_SpinL");
+        rightFeeder = hardwareMap.get(CRServo.class, "spinny_SpinR");
 
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        launchDrive.setDirection(DcMotor.Direction.FORWARD);
+        flywheel.setDirection(DcMotor.Direction.FORWARD);
 
-        spinnySpinL.setDirection(CRServo.Direction.FORWARD);
-        spinnySpinR.setDirection(CRServo.Direction.REVERSE);
+        leftFeeder.setDirection(CRServo.Direction.FORWARD);
+        rightFeeder.setDirection(CRServo.Direction.REVERSE);
 
         leftDrive.setZeroPowerBehavior(BRAKE);
         rightDrive.setZeroPowerBehavior(BRAKE);
+        flywheel.setZeroPowerBehavior(BRAKE);
         telemetry.addData("Status", "initialized");
+        telemetry.update();
     }
     @Override
     public void init_loop() {
@@ -75,29 +73,42 @@ public class DriveCode extends OpMode {
             rightPower /= max;
         }
 
-
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
 
         //Toggles FlyWheel
         if (gamepad1.right_trigger >= 0.1) {
-            launchDrive.setPower(0.75);
-            System.out.println("SPINNIG");
+            flywheel.setPower(0.75);
+            telemetry.addLine("SPINNING");
         }
         if (gamepad1.right_bumper) {
-            launchDrive.setPower(0);
-            System.out.println("STOPPING");
+            flywheel.setPower(0);
+            telemetry.addLine("STOPPING");
         }
-        //Toggles Servo
+
+        // Toggles feeders on and off every 1/2 second
         if (gamepad1.left_trigger >= 0.1) {
-            spinnySpinL.setPower(1);
-            spinnySpinR.setPower(1);
-            System.out.println("SERVO_WORKING");
-        }
-        if (gamepad1.left_bumper) {
-                spinnySpinL.setPower(0);
-                spinnySpinR.setPower(0);
-                System.out.println("SERVO_STOPPING");
+            if (!isShooting) {
+                // The trigger was just pulled, start the timer
+                shootTimer.reset();
             }
-        leftDrive.setPower(leftPower);
-        rightDrive.setPower(rightPower);
+            // Feed in the first 1/2 of each second, stop in the second half
+            if (shootTimer.milliseconds() % 750 < 250) {
+                leftFeeder.setPower(1);
+                rightFeeder.setPower(1);
+                telemetry.addLine("RUNNING FEEDER");
+            } else {
+                leftFeeder.setPower(0);
+                rightFeeder.setPower(0);
+                telemetry.addLine("PAUSING FEEDER");
+            }
+            isShooting = true;
+        } else {
+            isShooting = false;
+            leftFeeder.setPower(0);
+            rightFeeder.setPower(0);
         }
+
+        telemetry.update();
     }
+}
