@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name = "DriveCode", group = "StarterBot")
 public class DriveCode extends OpMode {
 
+    public boolean flywheeling = false;
+
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     private DcMotor rightDriveB = null;
@@ -99,14 +101,17 @@ public class DriveCode extends OpMode {
 //clockwise = forward
 //Toggles FlyWheel
         if (gamepad1.x) {
-           flywheel.setPower(0.55);
-          telemetry.addLine("SPINNING SLOW");
+            flywheeling = true;
+           flywheel.setPower(0.45);
+          telemetry.addLine("SPINNING");
       }
       if (gamepad1.b) {
-            flywheel.setPower(0.8);
-          telemetry.addLine("SPINNING FAST");
+            leftFeeder.setPower(-1);
+            rightFeeder.setPower(-1);
+          telemetry.addLine("REVERSE BACKUP ON");
         }
        if (gamepad1.right_bumper) {
+           flywheeling = false;
            flywheel.setPower(0);
            telemetry.addLine("STOPPING");
       }
@@ -118,10 +123,12 @@ public class DriveCode extends OpMode {
                 shootTimer.reset();
             }
             // Feed in the first 1/2 of each second, stop in the second half
-            if (shootTimer.milliseconds() % 1700 < 200) {
-                leftFeeder.setPower(1);
-                rightFeeder.setPower(1);
-                telemetry.addLine("RUNNING FEEDER");
+            if (shootTimer.milliseconds() % 2250 < 200) {
+                if (flywheeling) {
+                    leftFeeder.setPower(1);
+                    rightFeeder.setPower(1);
+                    telemetry.addLine("RUNNING FEEDER");
+                }
             } else {
                 leftFeeder.setPower(0);
                 rightFeeder.setPower(0);
