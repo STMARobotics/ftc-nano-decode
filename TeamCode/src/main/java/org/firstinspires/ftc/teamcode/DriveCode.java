@@ -25,9 +25,11 @@ public class DriveCode extends OpMode {
     private CRServo rightFeeder = null;
 
     private final ElapsedTime shootTimer = new ElapsedTime();
+
     private boolean isShooting = false;
 
     public void init() {
+
         leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         leftDriveB = hardwareMap.get(DcMotor.class, "left_driveB");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
@@ -54,6 +56,7 @@ public class DriveCode extends OpMode {
         telemetry.addData("Status", "initialized");
         telemetry.update();
     }
+
     @Override
     public void init_loop() {
     }
@@ -74,26 +77,27 @@ public class DriveCode extends OpMode {
         boolean slow;
         boolean fast;
 
-        drive = -gamepad1.left_stick_y;
-        turn = gamepad1.right_stick_x;
-        slow = gamepad1.x;
-        fast = gamepad1.b;
+        turn = -gamepad1.left_stick_y;
+        drive = gamepad1.right_stick_x;
 
-        leftPower  = drive + turn;
+        leftPower = drive + turn;
         rightPower = drive - turn;
         leftPowerB = drive + turn;
         rightPowerB = drive - turn;
 
         // Normalize the values so neither exceed +/- 1.0
         max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
-        if (max > 1.0)
-        {
+        if (max > 1.0) {
             leftPower /= max;
             rightPower /= max;
             leftPowerB /= max;
             rightPowerB /= max;
         }
 
+        // I want to burn the Math statement so
+        // so so so so so so
+        // so so so SO SOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+        // much.
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
         leftDriveB.setPower(leftPowerB);
@@ -102,19 +106,27 @@ public class DriveCode extends OpMode {
 //Toggles FlyWheel
         if (gamepad1.x) {
             flywheeling = true;
-           flywheel.setPower(0.45);
-          telemetry.addLine("SPINNING");
-      }
-      if (gamepad1.b) {
-            leftFeeder.setPower(-1);
-            rightFeeder.setPower(-1);
-          telemetry.addLine("REVERSE BACKUP ON");
+            flywheel.setPower(0.5);
+            telemetry.addLine("SPINNING");
         }
-       if (gamepad1.right_bumper) {
-           flywheeling = false;
-           flywheel.setPower(0);
-           telemetry.addLine("STOPPING");
-      }
+        if (gamepad1.y) {
+            flywheeling = true;
+            flywheel.setPower(0.67);
+            telemetry.addLine("SPINNING");
+        }
+        if (gamepad1.b) {
+            leftFeeder.setPower(-1);
+            rightFeeder.setPower(1);
+            flywheel.setPower(-0.5);
+            telemetry.addLine("REVERSE BACKUP ON");
+        }
+        if (gamepad1.right_bumper) {
+            flywheeling = false;
+            leftFeeder.setPower(0);
+            rightFeeder.setPower(0);
+            flywheel.setPower(0);
+            telemetry.addLine("STOPPING");
+        }
         // Make it that different button = different flywheel speed
         // Toggles feeders on and off every 1/2 second
         if (gamepad1.left_trigger >= 0.1) {
@@ -123,7 +135,7 @@ public class DriveCode extends OpMode {
                 shootTimer.reset();
             }
             // Feed in the first 1/2 of each second, stop in the second half
-            if (shootTimer.milliseconds() % 2250 < 200) {
+            if (shootTimer.milliseconds() % 3575 < 200) {
                 if (flywheeling) {
                     leftFeeder.setPower(1);
                     rightFeeder.setPower(1);

@@ -11,15 +11,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Drive forward")
+@Autonomous(name = "Drive forward", group = "StarterBot")
 public class AutoOpmode extends LinearOpMode {
+
+    private final ElapsedTime shootTimer = new ElapsedTime();
+    private boolean isShooting = false;
 
     private DcMotor left_drive;
     private DcMotor right_drive;
-    private DcMotor mid_feeder;
-    private CRServo left_servo;
-    private CRServo right_servo;
-
+    private DcMotor left_driveB;
+    private DcMotor right_driveB;
+    private DcMotor flywheel;
+    private CRServo leftFeeder;
+    private CRServo rightFeeder;
 
 
     /**
@@ -34,30 +38,53 @@ public class AutoOpmode extends LinearOpMode {
         ElapsedTime myElapsedTime = new ElapsedTime();
 
         left_drive = hardwareMap.get(DcMotor.class, "left_drive");
-        right_drive = hardwareMap.get(DcMotor.class,"right_drive");
-        mid_feeder = hardwareMap.get(DcMotor.class, "mid_feeder");
-        right_servo = hardwareMap.get(CRServo.class, "right_servo");
-        left_servo = hardwareMap.get(CRServo.class, "left_servo");
+        right_drive = hardwareMap.get(DcMotor.class, "right_drive");
+        left_driveB = hardwareMap.get(DcMotor.class, "left_driveB");
+        right_driveB = hardwareMap.get(DcMotor.class, "right_driveB");
+        flywheel = hardwareMap.get(DcMotor.class, "launch_drive");
+        rightFeeder = hardwareMap.get(CRServo.class, "right_Feeder");
+        leftFeeder = hardwareMap.get(CRServo.class, "left_Feeder");
 
         // Put initialization blocks here.
         waitForStart();
         if (opModeIsActive()) {
-            mid_feeder.setPower(1);
+            flywheel.setPower(0.50);
             myElapsedTime.reset();
             // Put run blocks here.
             while (opModeIsActive()) {
                 if (myElapsedTime.milliseconds() < 1000) {
                     left_drive.setPower(0.5);
                     right_drive.setPower(-0.5);
+                    left_driveB.setPower(0.5);
+                    right_driveB.setPower(-0.5);
                 } else {
                     left_drive.setPower(0);
                     right_drive.setPower(0);
+                    left_driveB.setPower(0);
+                    right_driveB.setPower(0);
                 }
-                left_servo.setPower(1);
-                right_servo.setPower(1);
-
-                // Put loop blocks here.
-                telemetry.update();
+                if (myElapsedTime.milliseconds() > 4000) {
+                    if (!isShooting) {
+                        // The trigger was just pulled, start the timer
+                        shootTimer.reset();
+                    }
+                    // Feed in the first 1/2 of each second, stop in the second half
+                    if (shootTimer.milliseconds() % 3575 < 200) {
+                        isShooting = true;
+                        leftFeeder.setPower(1);
+                        rightFeeder.setPower(1);
+                        telemetry.addLine("RUNNING FEEDER");
+                    } else {
+                        isShooting = false;
+                        leftFeeder.setPower(0);
+                        rightFeeder.setPower(0);
+                        telemetry.addLine("PAUSING FEEDER");
+                        leftFeeder.setPower(1);
+                        rightFeeder.setPower(1);
+                    }
+                    // Put loop blocks here.
+                    telemetry.update();
+                }
             }
         }
     }
