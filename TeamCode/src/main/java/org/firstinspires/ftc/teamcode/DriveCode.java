@@ -152,7 +152,6 @@ public class DriveCode extends OpMode {
             leftFeeder.setPower(0);
             rightFeeder.setPower(0);
         }
-
         telemetry.update();
     }
 }

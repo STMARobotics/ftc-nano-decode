@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Drive forward", group = "StarterBot")
+@Autonomous(name = "RC", group = "StarterBot")
 public class AutoOpmode extends LinearOpMode {
 
     private final ElapsedTime shootTimer = new ElapsedTime();
@@ -48,22 +48,22 @@ public class AutoOpmode extends LinearOpMode {
         // Put initialization blocks here.
         waitForStart();
         if (opModeIsActive()) {
-            flywheel.setPower(0.50);
+            flywheel.setPower(0.55);
             myElapsedTime.reset();
             // Put run blocks here.
             while (opModeIsActive()) {
                 if (myElapsedTime.milliseconds() < 1000) {
                     left_drive.setPower(0.5);
-                    right_drive.setPower(-0.5);
+                    right_drive.setPower(0.5);
                     left_driveB.setPower(0.5);
-                    right_driveB.setPower(-0.5);
+                    right_driveB.setPower(0.5);
                 } else {
                     left_drive.setPower(0);
                     right_drive.setPower(0);
                     left_driveB.setPower(0);
                     right_driveB.setPower(0);
                 }
-                if (myElapsedTime.milliseconds() > 4000) {
+                if (myElapsedTime.milliseconds() > 4000 && myElapsedTime.milliseconds() < 13000) {
                     if (!isShooting) {
                         // The trigger was just pulled, start the timer
                         shootTimer.reset();
@@ -71,20 +71,21 @@ public class AutoOpmode extends LinearOpMode {
                     // Feed in the first 1/2 of each second, stop in the second half
                     if (shootTimer.milliseconds() % 3575 < 200) {
                         isShooting = true;
-                        leftFeeder.setPower(1);
-                        rightFeeder.setPower(1);
+                        leftFeeder.setPower(-1);
+                        rightFeeder.setPower(-1);
                         telemetry.addLine("RUNNING FEEDER");
                     } else {
-                        isShooting = false;
                         leftFeeder.setPower(0);
                         rightFeeder.setPower(0);
                         telemetry.addLine("PAUSING FEEDER");
-                        leftFeeder.setPower(1);
-                        rightFeeder.setPower(1);
                     }
-                    // Put loop blocks here.
-                    telemetry.update();
+                    if (myElapsedTime.milliseconds() > 13000 && myElapsedTime.milliseconds() < 17000) {
+                        left_driveB.setPower(1);
+                        right_driveB.setPower(-1);
+                    }
                 }
+                // Put loop blocks here.
+                telemetry.update();
             }
         }
     }
