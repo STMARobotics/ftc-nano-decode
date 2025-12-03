@@ -20,7 +20,6 @@ public class DriveCode extends OpMode {
     private DcMotor leftDriveB = null;
     private DcMotor flywheel = null;
 
-
     private CRServo leftFeeder = null;
     private CRServo rightFeeder = null;
 
@@ -106,17 +105,17 @@ public class DriveCode extends OpMode {
 //Toggles FlyWheel
         if (gamepad1.x) {
             flywheeling = true;
-            flywheel.setPower(0.5);
+            flywheel.setPower(0.54595);
             telemetry.addLine("SPINNING");
         }
         if (gamepad1.y) {
             flywheeling = true;
-            flywheel.setPower(0.67);
+            flywheel.setPower(0.625);
             telemetry.addLine("SPINNING");
         }
         if (gamepad1.b) {
             leftFeeder.setPower(-1);
-            rightFeeder.setPower(1);
+            rightFeeder.setPower(-1);
             flywheel.setPower(-0.5);
             telemetry.addLine("REVERSE BACKUP ON");
         }
