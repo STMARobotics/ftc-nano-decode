@@ -45,7 +45,7 @@ public class AutoOpmodeLC extends LinearOpMode {
         // Put initialization blocks here.
         waitForStart();
         if (opModeIsActive()) {
-            flywheel.setPower(0.537);
+            flywheel.setPower(0.495);
             myElapsedTime.reset();
             // Put run blocks here.
             while (opModeIsActive()) {

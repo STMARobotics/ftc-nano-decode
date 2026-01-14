@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "LF", group = "StarterBot")
-public class AutoOpmodeLF extends LinearOpMode {
+@Autonomous(name = "FX", group = "StarterBot")
+public class QualFixAutoOpmode extends LinearOpMode {
 
     private final ElapsedTime shootTimer = new ElapsedTime();
     private boolean isShooting = false;
@@ -50,18 +50,22 @@ public class AutoOpmodeLF extends LinearOpMode {
             // Put run blocks here.
             while (opModeIsActive()) {
                 if (myElapsedTime.milliseconds() < 1200) {
-                    left_drive.setPower(0.5);
-                    right_drive.setPower(0.5);
-                    left_driveB.setPower(0.5);
-                    right_driveB.setPower(0.5);
-                } if (myElapsedTime.milliseconds() > 1400) {
-
+                    left_drive.setPower(-0.5);
+                    right_drive.setPower(-0.5);
+                    left_driveB.setPower(-0.5);
+                    right_driveB.setPower(-0.5);
+                } else if (myElapsedTime.milliseconds() > 1200 && myElapsedTime.milliseconds() < 4000) {
+                    left_drive.setPower(0);
+                    right_drive.setPower(0);
+                    left_driveB.setPower(0);
+                    right_driveB.setPower(0);
                 }
+                // Put loop blocks here.
+                telemetry.update();
             }
         }
-        // Put loop blocks here.
-        telemetry.update();
     }
 }
+
 
 

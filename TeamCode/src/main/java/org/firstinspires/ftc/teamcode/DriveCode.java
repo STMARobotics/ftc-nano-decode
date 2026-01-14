@@ -105,12 +105,17 @@ public class DriveCode extends OpMode {
 //Toggles FlyWheel
         if (gamepad1.x) {
             flywheeling = true;
-            flywheel.setPower(0.54595);
+            flywheel.setPower(0.495);
             telemetry.addLine("SPINNING");
         }
         if (gamepad1.y) {
             flywheeling = true;
-            flywheel.setPower(0.625);
+            flywheel.setPower(0.6);
+            telemetry.addLine("SPINNING");
+        }
+        if (gamepad1.a) {
+            flywheeling = true;
+            flywheel.setPower(0.7);
             telemetry.addLine("SPINNING");
         }
         if (gamepad1.b) {

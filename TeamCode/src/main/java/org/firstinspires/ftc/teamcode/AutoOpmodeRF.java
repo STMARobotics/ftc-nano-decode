@@ -45,32 +45,32 @@ public class AutoOpmodeRF extends LinearOpMode {
         // Put initialization blocks here.
         waitForStart();
         if (opModeIsActive()) {
-            flywheel.setPower(0.5475);
+            flywheel.setPower(0.525);
             myElapsedTime.reset();
             // Put run blocks here.
             while (opModeIsActive()) {
-                if (myElapsedTime.milliseconds() < 1000) {
-                    left_drive.setPower(-1);
-                    right_drive.setPower(-1);
-                    left_driveB.setPower(-1);
-                    right_driveB.setPower(-1);
-                } else if (myElapsedTime.milliseconds() < 6000) {
+                if (myElapsedTime.milliseconds() < 1200) {
+                    left_drive.setPower(-0.75);
+                    right_drive.setPower(-0.75);
+                    left_driveB.setPower(-0.75);
+                    right_driveB.setPower(-0.75);
+                } else if (myElapsedTime.milliseconds() > 1200 && myElapsedTime.milliseconds() < 4000) {
                     left_drive.setPower(0);
                     right_drive.setPower(0);
                     left_driveB.setPower(0);
                     right_driveB.setPower(0);
                 }
-                if (myElapsedTime.milliseconds() > 6000 && myElapsedTime.milliseconds() < 7000) {
-                    right_driveB.setPower(1);
-                    right_drive.setPower(1);
-                    left_driveB.setPower(-1);
-                    left_drive.setPower(-1);
-                } else if (myElapsedTime.milliseconds() > 7000 && myElapsedTime.milliseconds() < 7100)
+                if (myElapsedTime.milliseconds() > 4000 && myElapsedTime.milliseconds() < 5000) {
+                    right_driveB.setPower(0.5);
+                    right_drive.setPower(0.5);
+                    left_driveB.setPower(-0.5);
+                    left_drive.setPower(-0.5);
+                } else if (myElapsedTime.milliseconds() > 5000 && myElapsedTime.milliseconds() < 5100)
                     right_driveB.setPower(0);
                 right_drive.setPower(0);
                 left_driveB.setPower(0);
                 left_drive.setPower(0);
-                if (myElapsedTime.milliseconds() > 7100 && myElapsedTime.milliseconds() < 21000) {
+                if (myElapsedTime.milliseconds() > 5100 && myElapsedTime.milliseconds() < 19100) {
                     if (!isShooting) {
                         // The trigger was just pulled, start the timer
                         shootTimer.reset();
@@ -87,22 +87,22 @@ public class AutoOpmodeRF extends LinearOpMode {
                         telemetry.addLine("PAUSING FEEDER");
                     }
                 }
-                if (myElapsedTime.milliseconds() > 21000 && myElapsedTime.milliseconds() < 22000) {
+                if (myElapsedTime.milliseconds() > 19100 && myElapsedTime.milliseconds() < 20000) {
                     right_driveB.setPower(-1);
                     right_drive.setPower(-1);
                     left_driveB.setPower(1);
                     left_drive.setPower(1);
-                } else if (myElapsedTime.milliseconds() > 22000 && myElapsedTime.milliseconds() < 22100)
+                } else if (myElapsedTime.milliseconds() > 20000 && myElapsedTime.milliseconds() < 20100)
                     right_driveB.setPower(0);
                 right_drive.setPower(0);
                 left_driveB.setPower(0);
                 left_drive.setPower(0);
-                if (myElapsedTime.milliseconds() > 22200 && myElapsedTime.milliseconds() < 23000) {
+                if (myElapsedTime.milliseconds() > 21000 && myElapsedTime.milliseconds() < 22000) {
                     left_driveB.setPower(1);
                     right_driveB.setPower(1);
                     left_drive.setPower(1);
                     right_drive.setPower(1);
-                } else if (myElapsedTime.milliseconds() > 23500){
+                } else if (myElapsedTime.milliseconds() > 22500){
                     left_driveB.setPower(0);
                     right_driveB.setPower(0);
                     left_drive.setPower(0);
